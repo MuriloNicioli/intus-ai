@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/src/assets/cubo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Desenvolvemos IA treinada para o seu negócio, para responder aos seus clientes. Agentes inteligentes com linguagem alinhada à sua marca." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- GARANTINDO QUE A FONTE É CARREGADA COM HTTPS -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
+    <style>
+      :root {
+        /* Paleta alinhada ao site */
+        --chat--color-primary: #22D3EE;
+        --chat--color-primary-shade-50: #06B6D4;
+        --chat--color-primary-shade-100: #0891B2;
+        --chat--color-secondary: #0F172A;
+        --chat--color-white: #F8FAFC;
+        --chat--color-light: #CBD5E1;
+        --chat--color-light-shade-50: #94A3B8;
+        --chat--color-light-shade-100: #64748B;
+        --chat--color-medium: #334155;
+        --chat--color-dark: #0A1222;
+        --chat--color-disabled: #7C8AA5;
+        --chat--color-typing: #07161D;
+
+        /* Dimensões/efeitos */
+        --chat--spacing: 1rem;
+        --chat--border-radius: 16px;
+        --chat--transition-duration: 0.2s;
+
+        --chat--window--width: 420px;
+        --chat--window--height: 640px;
+
+        /* Cabeçalho */
+        --chat--header-height: auto;
+        --chat--header--padding: calc(var(--chat--spacing) * 1.1);
+        --chat--header--background: linear-gradient(
+          135deg,
+          rgba(2, 6, 23, 0.98) 0%,
+          rgba(15, 23, 42, 0.98) 65%,
+          rgba(34, 211, 238, 0.18) 100%
+        );
+        --chat--header--color: var(--chat--color-white);
+        --chat--heading--font-size: 1.25rem;
+        --chat--subtitle--font-size: 0.95rem;
+        --chat--subtitle--line-height: 1.6;
+
+        /* Mensagens */
+        --chat--message--font-size: 0.98rem;
+        --chat--message--padding: calc(var(--chat--spacing) * 0.9);
+        --chat--message--border-radius: 14px;
+        --chat--message-line-height: 1.7;
+
+        --chat--message--bot--background: rgba(8, 15, 31, 0.92);
+        --chat--message--bot--color: #E6FBFF;
+        --chat--message--bot--border: 1px solid rgba(148, 163, 184, 0.14);
+
+        /* >>> Fundo do usuário mais CLARO: #0C3F56 <<< */
+        --chat--message--user--background: #0C3F56;
+        --chat--message--user--color: #EAFEFF;
+        --chat--message--user--border: 1px solid rgba(34, 211, 238, 0.35);
+
+        --chat--message--pre--background: rgba(2, 6, 23, 0.45);
+
+        /* Input */
+        --chat--textarea--height: 56px;
+
+        /* Toggle / FAB */
+        --chat--toggle--background: radial-gradient(120% 120% at 0% 0%, #22D3EE 0%, #0EA5B7 60%, #0F172A 100%);
+        --chat--toggle--hover--background: #22D3EE;
+        --chat--toggle--active--background: #0EA5B7;
+        --chat--toggle--color: #001018;
+        --chat--toggle--size: 64px;
+      }
+
+      /* —— Refinos visuais (escopo limitado ao container do chat) —— */
+      #n8n-chat, #n8n-chat * {
+        font-family: 'Inter', 'Manrope', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+
+      /* Janela com efeito glass + sombra ciano */
+      #n8n-chat .n8n-chat__window {
+        background: rgba(2, 6, 23, 0.75);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 16px !important;
+        box-shadow:
+          0 20px 40px rgba(2, 132, 199, 0.12),
+          0 6px 22px rgba(0, 0, 0, 0.45);
+        overflow: hidden;
+      }
+
+      /* Cabeçalho */
+      #n8n-chat .n8n-chat__header {
+        background: var(--chat--header--background);
+        border: 0;
+        padding: 16px 18px;
+      }
+      #n8n-chat .n8n-chat__header-title {
+        color: var(--chat--header--color);
+        font-weight: 800;
+        letter-spacing: .2px;
+      }
+      #n8n-chat .n8n-chat__header-subtitle {
+        color: var(--chat--header--color);
+        opacity: .8;
+      }
+
+      /* Bolhas padrão */
+      #n8n-chat .n8n-chat__message--bot {
+        background: var(--chat--message--bot--background);
+        color: var(--chat--message--bot--color);
+        border: var(--chat--message--bot--border);
+      }
+
+      /* Bolha do usuário via variável */
+      #n8n-chat .n8n-chat__message--user {
+        background: var(--chat--message--user--background);
+        color: var(--chat--message--user--color);
+        border: var(--chat--message--user--border);
+      }
+
+      /* Força #0C3F56 em qualquer variante/estado do bubble do usuário */
+      #n8n-chat { --chat--message--user--background: #0C3F56; }
+      #n8n-chat .n8n-chat__message--user,
+      #n8n-chat .n8n-chat__message--user .n8n-chat__message-bubble,
+      #n8n-chat .n8n-chat__message--user .n8n-chat__message-content,
+      #n8n-chat [class*="message--user"],
+      #n8n-chat [class*="message--self"],
+      #n8n-chat [class*="message--outgoing"] {
+        background: #0C3F56 !important;
+        border-color: rgba(34,211,238,.35) !important;
+      }
+    </style>
+
+    <title>Intus AI</title>
+  </head>
+  <body>
+    <div id="n8n-chat"></div>
+    <div id="root"></div>
+    
+    <script type="module">
+      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+      window.n8nChat = createChat({
+          webhookUrl: 'https://gancho.intusai.com.br/webhook/c3ec4c25-4084-42ff-8e1d-1ea6bc8ee962/chat',
+          webhookConfig: { method: 'POST', headers: {} },
+          target: '#n8n-chat',
+          mode: 'window',
+          chatInputKey: 'chatInput',
+          chatSessionKey: 'sessionId',
+          loadPreviousSession: true,
+          metadata: {},
+          showWelcomeScreen: false,
+          defaultLanguage: 'en',
+          initialMessages: [
+              'Hi!',
+              'How can I assist you today?'
+          ],
+          i18n: {
+              en: {
+                  title: 'JOSH - INTUS AI',
+                  subtitle: "I'm here to help you 24/7.",
+                  footer: '',
+                  getStarted: 'New Conversation',
+                  inputPlaceholder: 'Type your question..',
+              },
+          },
+          enableStreaming: false,
+      });
+
+      import('/src/main.jsx');
+    </script>
+  </body>
+</html>
