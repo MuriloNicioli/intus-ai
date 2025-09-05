@@ -4,21 +4,11 @@ services:
   intusai-site:
     # Usando a imagem pronta que o GitHub Actions criou
     image: ghcr.io/murilonicioli/intus-ai:latest
-    
-    # Usando uma porta de teste nova e única
+
+    # Ao publicar uma porta, o Swarm automaticamente usará a rede 'ingress'
     ports:
       - "8082:80"
-      
-    # A MUDANÇA CRÍTICA: Conectando à rede 'ingress' padrão do Swarm
-    networks:
-      - ingress
 
     deploy:
       mode: replicated
       replicas: 1
-      # Nenhuma label, nenhum placement, nenhuma rede customizada. O mínimo absoluto.
-
-# Declaração para que o Docker saiba que a rede 'ingress' já existe
-networks:
-  ingress:
-    external: true
