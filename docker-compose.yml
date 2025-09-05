@@ -1,10 +1,12 @@
+# docker-compose.yml (VERSÃO FINAL E CORRETA)
 version: '3.8'
 
 services:
-  intusai-site:
-    # CORREÇÃO FINAL: Usando o nome de usuário com as letras maiúsculas corretas.
-    image: ghcr.io/MuriloNicioli/intus-ai:latest
-    
+  intus-ai-site:
+    # CORREÇÃO FINAL: Usando o caminho todo em minúsculas,
+    # que agora corresponde ao que o GitHub Actions vai criar.
+    image: ghcr.io/murilonicioli/intus-ai:latest
+
     networks:
       - intusai-net-desenv
 
@@ -13,9 +15,9 @@ services:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.intusai-site-http.rule=Host(`intusai.com.br`)"
+        - "traefik.http.routers.intusai-site-http.rule=Host(`intus-ai.com.br`)"
         - "traefik.http.routers.intusai-site-http.entrypoints=web"
-        - "traefik.http.routers.intusai-site-https.rule=Host(`intusai.com.br`)"
+        - "traefik.http.routers.intusai-site-https.rule=Host(`intus-ai.com.br`)"
         - "traefik.http.routers.intusai-site-https.entrypoints=websecure"
         - "traefik.http.routers.intusai-site-https.tls=true"
         - "traefik.http.routers.intusai-site-https.tls.certresolver=letsencryptresolver"

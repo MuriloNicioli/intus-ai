@@ -1,17 +1,17 @@
-# .github/workflows/docker-publish.yml
+# .github/workflows/docker-publish.yml (VERSÃO CORRIGIDA)
 
 name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ "main" ] # Executa quando houver push na branch main
+    branches: [ "main" ]
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # Permissão para enviar pacotes (imagens)
+      packages: write
 
     steps:
     - name: Checkout repository
@@ -24,9 +24,17 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    # ESTE NOVO PASSO CONVERTE O NOME DE USUÁRIO PARA MINÚSCULAS
+    - name: Prepare image tags
+      id: prep
+      run: |
+        OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+        echo "OWNER_LC=$OWNER_LC" >> $GITHUB_OUTPUT
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: ./Sitepronto # Informa que o Dockerfile está na pasta Sitepronto
+        context: ./Sitepronto
         push: true
-        tags: ghcr.io/murilonicioli/intus-ai:latest # IMPORTANTE: use seu usuário/nome do repo aqui
+        # A tag agora usa a versão em minúsculas do seu nome
+        tags: ghcr.io/${{ steps.prep.outputs.OWNER_LC }}/intus-ai:latest
