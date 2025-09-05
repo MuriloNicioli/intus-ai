@@ -1,12 +1,15 @@
-# docker-compose.yml (VERSÃO FINAL E CORRETA)
+# docker-compose.yml (Versão Final para Deploy Manual)
 version: '3.8'
 
 services:
-  intus-ai-site:
-    # CORREÇÃO FINAL: Usando o caminho todo em minúsculas,
-    # que agora corresponde ao que o GitHub Actions vai criar.
-    image: ghcr.io/murilonicioli/intus-ai:latest
-
+  intusai-site:
+    # Nome da imagem a ser construída. Será local no seu servidor.
+    image: intusai-site:latest
+    build:
+      # Caminho absoluto para a pasta com o código na sua VPS
+      context: /root/stacks/intus-ai/Sitepronto
+      dockerfile: Dockerfile
+    
     networks:
       - intusai-net-desenv
 
@@ -15,9 +18,9 @@ services:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.intusai-site-http.rule=Host(`intus-ai.com.br`)"
+        - "traefik.http.routers.intusai-site-http.rule=Host(`intusai.com.br`)"
         - "traefik.http.routers.intusai-site-http.entrypoints=web"
-        - "traefik.http.routers.intusai-site-https.rule=Host(`intus-ai.com.br`)"
+        - "traefik.http.routers.intusai-site-https.rule=Host(`intusai.com.br`)"
         - "traefik.http.routers.intusai-site-https.entrypoints=websecure"
         - "traefik.http.routers.intusai-site-https.tls=true"
         - "traefik.http.routers.intusai-site-https.tls.certresolver=letsencryptresolver"
