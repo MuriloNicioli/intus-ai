@@ -1,0 +1,44 @@
+# docker-compose.yml (Coloque este arquivo na RAIZ do seu repositório)
+
+version: '3.8'
+
+services:
+  intusai-site:
+    image: intusai-site:${TAG:-latest} # Permite versionamento futuro
+    build:
+      # CORREÇÃO CRÍTICA: O contexto agora aponta para a pasta correta
+      context: ./Sitepronto
+      dockerfile: Dockerfile
+
+    networks:
+      # Conecta o serviço à sua rede do Traefik
+      - intusai-net-desenv
+
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == ubuntu-murilo-worker # Garanta que este é o hostname correto do seu nó no Swarm
+      labels:
+        # --- Configuração do Traefik ---
+        - "traefik.enable=true"
+        - "traefik.docker.network=intusai-net-desenv" # Especifica a rede para o Traefik
+
+        # Roteador para redirecionar HTTP para HTTPS
+        - "traefik.http.routers.intusai-site-http.rule=Host(`intusai.com.br`)"
+        - "traefik.http.routers.intusai-site-http.entrypoints=web"
+        - "traefik.http.routers.intusai-site-http.middlewares=https@intusai-net-desenv" # Garanta que este middleware existe na sua config do Traefik
+
+        # Roteador principal para HTTPS
+        - "traefik.http.routers.intusai-site-https.rule=Host(`intusai.com.br`)"
+        - "traefik.http.routers.intusai-site-https.entrypoints=websecure"
+        - "traefik.http.routers.intusai-site-https.tls=true"
+        - "traefik.http.routers.intusai-site-https.tls.certresolver=cloudflare" # Seu resolvedor de certificado
+
+        # Serviço que o Traefik vai usar
+        - "traefik.http.services.intusai-site-service.loadbalancer.server.port=80"
+
+networks:
+  intusai-net-desenv:
+    external: true
