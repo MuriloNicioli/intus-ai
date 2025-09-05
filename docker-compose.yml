@@ -1,35 +1,40 @@
-# docker-compose.yml (Coloque na RAIZ do seu repositório)
+# docker-compose.yml (Versão Final e Corrigida)
 
 version: '3.8'
 
 services:
-  # O nome foi padronizado, mas você pode usar 'intusai-web' se preferir
   intusai-site:
     image: intusai-site:${TAG:-latest}
     build:
-      # A instrução que adapta seu fluxo antigo para o novo
       context: ./Sitepronto
       dockerfile: Dockerfile
     
     networks:
-      # O nome da sua rede foi corrigido aqui
+      # Conecta o serviço à sua rede Traefik
       - intusai-net-desenv
 
     deploy:
       mode: replicated
       replicas: 1
-      # A seção 'placement' foi removida para garantir o deploy
+      # A seção 'placement' foi removida para dar flexibilidade e resiliência ao Swarm
       labels:
+        # --- Configuração do Traefik ---
         - "traefik.enable=true"
+        
+        # --- Roteador HTTP (para redirecionamento) ---
         - "traefik.http.routers.intusai-site-http.rule=Host(`intusai.com.br`)"
         - "traefik.http.routers.intusai-site-http.entrypoints=web"
+        # CORREÇÃO: Usando um nome de middleware padrão e válido.
+        # Você DEVE ter um middleware com este nome na sua configuração principal do Traefik.
         - "traefik.http.routers.intusai-site-http.middlewares=redirect-to-https"
 
+        # --- Roteador HTTPS (principal) ---
         - "traefik.http.routers.intusai-site-https.rule=Host(`intusai.com.br`)"
         - "traefik.http.routers.intusai-site-https.entrypoints=websecure"
         - "traefik.http.routers.intusai-site-https.tls=true"
         - "traefik.http.routers.intusai-site-https.tls.certresolver=cloudflare"
 
+        # --- Serviço que o Traefik usa ---
         - "traefik.http.services.intusai-site-service.loadbalancer.server.port=80"
 
 networks:
