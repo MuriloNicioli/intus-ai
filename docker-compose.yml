@@ -2,25 +2,23 @@ version: '3.8'
 
 services:
   intusai-site:
-    # INSTRUÇÃO FINAL: Puxa a imagem pronta do GitHub Container Registry
+    # Usando a imagem pronta que o GitHub Actions criou
     image: ghcr.io/murilonicioli/intus-ai:latest
     
+    # Usando uma porta de teste nova e única
+    ports:
+      - "8082:80"
+      
+    # A MUDANÇA CRÍTICA: Conectando à rede 'ingress' padrão do Swarm
     networks:
-      - intusai-net-desenv
+      - ingress
 
     deploy:
       mode: replicated
       replicas: 1
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.intusai-site-http.rule=Host(`intusai.com.br`)"
-        - "traefik.http.routers.intusai-site-http.entrypoints=web"
-        - "traefik.http.routers.intusai-site-https.rule=Host(`intusai.com.br`)"
-        - "traefik.http.routers.intusai-site-https.entrypoints=websecure"
-        - "traefik.http.routers.intusai-site-https.tls=true"
-        - "traefik.http.routers.intusai-site-https.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.intusai-site-service.loadbalancer.server.port=80"
+      # Nenhuma label, nenhum placement, nenhuma rede customizada. O mínimo absoluto.
 
+# Declaração para que o Docker saiba que a rede 'ingress' já existe
 networks:
-  intusai-net-desenv:
+  ingress:
     external: true
