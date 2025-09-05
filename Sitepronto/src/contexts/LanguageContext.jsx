@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState } from 'react';
 
 const LanguageContext = createContext();
@@ -47,10 +48,10 @@ const translations = {
     step1Desc: 'Chat with our AI to clear up any initial questions and complete the first step. You\'ll then be able to schedule a meeting with an expert. Just click the chat icon in the corner of your screen.',
     step2Title: 'Meeting',
     step2Desc: 'A meeting to understand and align on the exact scope of the project.',
-    step3Title: 'Development Kick-off',
+    step3Title: 'Development Moment',
     step3Desc: 'The moment our team will begin developing your AI.',
     step4Title: 'Deploy',
-    step4Desc: 'The moment your company will have a 24/7 AI to serve your clients.',
+    step4Desc: 'The moment your company will have a 24/7 AI to serve your team and your clients.',
     
     // FAQ
     faqTitle: 'FAQ',
@@ -117,10 +118,10 @@ const translations = {
     step1Desc: 'Converse com nossa IA para tirar suas dúvidas iniciais e realizar o pré-atendimento. Em seguida, poderá agendar uma reunião com um especialista. Apenas clique no ícone de chat no canto da sua tela.',
     step2Title: 'Reunião',
     step2Desc: 'Uma reunião para entender e alinhar exatamente qual será o escopo do projeto.',
-    step3Title: 'Início do Desenvolvimento',
+    step3Title: 'Momento do Desenvolvimento',
     step3Desc: 'O momento em que nossa equipe começará a desenvolver sua IA.',
     step4Title: 'Implementação',
-    step4Desc: 'O momento em que sua empresa terá uma IA 24/7 para atender seus clientes.',
+    step4Desc: 'O momento em que sua empresa terá uma IA 24/7 para atender sua equipe e seus clientes.',
     
     // FAQ
     faqTitle: 'FAQ',
