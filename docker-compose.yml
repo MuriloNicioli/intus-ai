@@ -2,13 +2,25 @@ version: '3.8'
 
 services:
   intusai-site:
-    # Usando a imagem pronta que o GitHub Actions criou
-    image: ghcr.io/murilonicioli/intus-ai:latest
-
-    # Ao publicar uma porta, o Swarm automaticamente usará a rede 'ingress'
-    ports:
-      - "8082:80"
+    # CORREÇÃO FINAL: Usando o nome de usuário com as letras maiúsculas corretas.
+    image: ghcr.io/MuriloNicioli/intus-ai:latest
+    
+    networks:
+      - intusai-net-desenv
 
     deploy:
       mode: replicated
       replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.intusai-site-http.rule=Host(`intusai.com.br`)"
+        - "traefik.http.routers.intusai-site-http.entrypoints=web"
+        - "traefik.http.routers.intusai-site-https.rule=Host(`intusai.com.br`)"
+        - "traefik.http.routers.intusai-site-https.entrypoints=websecure"
+        - "traefik.http.routers.intusai-site-https.tls=true"
+        - "traefik.http.routers.intusai-site-https.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.intusai-site-service.loadbalancer.server.port=80"
+
+networks:
+  intusai-net-desenv:
+    external: true
