@@ -1,33 +1,22 @@
+# docker-compose.yml (MODO DE TESTE FINAL)
+
 version: '3.8'
 
 services:
   intusai-site:
-    image: intusai-site:${TAG:-latest}
+    image: intusai-site-teste:latest # Usando um novo nome de imagem para evitar cache
     build:
       context: ./Sitepronto
       dockerfile: Dockerfile
-    networks:
-      - intusai-net-desenv
+    
+    # Expondo uma porta diretamente para o teste, ignorando Traefik.
+    # Usamos uma porta alta (8081) para não ter conflito.
+    ports:
+      - "8081:80"
+
     deploy:
       mode: replicated
       replicas: 1
-      labels:
-        - "traefik.enable=true"
-        
-        # Roteador HTTP simples (será redirecionado globalmente pelo Traefik)
-        - "traefik.http.routers.intusai-site-http.rule=Host(`intusai.com.br`)"
-        - "traefik.http.routers.intusai-site-http.entrypoints=web"
-
-        # Roteador principal para HTTPS
-        - "traefik.http.routers.intusai-site-https.rule=Host(`intusai.com.br`)"
-        - "traefik.http.routers.intusai-site-https.entrypoints=websecure"
-        - "traefik.http.routers.intusai-site-https.tls=true"
-        # CORREÇÃO: Usando o nome exato do seu resolvedor de certificados
-        - "traefik.http.routers.intusai-site-https.tls.certresolver=letsencryptresolver"
-
-        # Serviço que o Traefik vai usar
-        - "traefik.http.services.intusai-site-service.loadbalancer.server.port=80"
-
-networks:
-  intusai-net-desenv:
-    external: true
+      # Nenhuma label do Traefik.
+      # Nenhuma restrição de placement.
+      # Apenas o mínimo absoluto para rodar.
